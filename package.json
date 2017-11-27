@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "watch": "nodemon server.js -e js,pug",
-    "start": "node server.js"
+    "start": "node server.js",
+    "css": "stylus stylus/main.styl -c -o public/css/style.css"
   },
   "author": "",
   "license": "ISC",
