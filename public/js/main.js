@@ -110,12 +110,18 @@
       if(random(1)<0.0000005*(win.innerWidth*win.innerHeight)) newStars.push(createStar());
       stars=newStars
       ctx.globalAlpha=1;
-      raf(draw)
+      if(!stopAnim)
+        raf(draw);
     })()
+    return {
+      stop:function(){
+        stopAnim=true;
+      }
+    }
   }
 
   (function() {
-    var animStars=stars()
+    let animStars=stars()
     let lastResizeW=win.innerWidth;
     let lastResizeH=win.innerHeight;
     let resizeTimer=null;
