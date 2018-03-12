@@ -1,12 +1,12 @@
 (function(){
 
-  var heightRefreshThreshold=120;
-  var virtualWindowHeight=0;
-  var win=window;
-  var dpi=win.devicePixelRatio;
-  var doc=document;
-  var body=doc.body;
-  var html=doc.documentElement;
+  let heightRefreshThreshold=120;
+  let virtualWindowHeight=0;
+  let win=window;
+  let dpi=win.devicePixelRatio;
+  let doc=document;
+  let body=doc.body;
+  let html=doc.documentElement;
   let raf=requestAnimationFrame
   function getScroll(){
     return win.pageYOffset || html.scrollTop;
@@ -16,7 +16,7 @@
   }
   function createCanvas(width,height,userDPI){
     if(typeof userDPI=="undefined") userDPI=dpi;
-    var canvas=doc.createElement('canvas');
+    let canvas=doc.createElement('canvas');
     setAttribute('width',width*userDPI,canvas);
     setAttribute('height',height*userDPI,canvas);
     return canvas;
@@ -25,7 +25,7 @@
     return doc.querySelector(selector);
   }
   function querySelectorAll(selector){
-    var nodes=doc.querySelectorAll(selector);
+    let nodes=doc.querySelectorAll(selector);
     return [].slice.call(nodes);
   }
   function getContext(canvas){
@@ -45,7 +45,7 @@
     return Math.random()*max;
   }
   function repeat(times,callback){
-    for(var i=0;i<times;i++){
+    for(let i=0;i<times;i++){
       callback(i);
     }
   }
@@ -76,49 +76,74 @@
       ctx.fillRect(-size/2,-size/2,size,size);
       ctx.restore();
     }
-    let stars=[]
+    let stars = []
     function createStar(){
       return {
-        x:random(bounds.width),
-        y:random(bounds.height),
-        s:0,
-        speed:0.01+random(0.035),
-        growing:true,
-        maxSize:1+(Math.pow(random(1),4)*10),
+        x: random(bounds.width),
+        y: random(bounds.height),
+        maxSize: 1+(Math.pow(random(1),4)*10),
+        opacity: random(1)
       }
     }
     (function draw(){
-      let newStars=[]
       ctx.clearRect(0,0,bounds.width*dpi,bounds.height*dpi);
       setFillStyle('#FFEDDB',ctx);
-      forEach(stars, function(star){
-        star.s+=star.speed*(star.growing?1:-1);
-        if(star.s>1) star.growing=false
-        if(star.s<0){
-          return;
-        }else{
-          newStars.push(star)
-        }
-        drawStar(
-          star.x*dpi,
-          star.y*dpi,
-          1,
-          smooth(star.s)*star.maxSize*dpi,
-          ctx
-        )
-      })
-      if(random(1)<0.0000005*(win.innerWidth*win.innerHeight)) newStars.push(createStar());
-      stars=newStars
-      ctx.globalAlpha=1;
-      if(!stopAnim)
-        raf(draw);
-    })()
-    return {
-      stop:function(){
-        stopAnim=true;
+      //Creates stars
+      for(let i =0; i<800; i++){
+        stars.push(createStar())
       }
-    }
+      forEach(stars, function(star){
+
+      })
+      console.log(stars)
+    })()
+    
   }
+
+  // ------ OLD --------
+  //   let stars=[]
+  //   function createStar(){
+  //     return {
+  //       x:random(bounds.width),
+  //       y:random(bounds.height),
+  //       s:0,
+  //       speed:0.01+random(0.035),
+  //       growing:true,
+  //       maxSize:1+(Math.pow(random(1),4)*10),
+  //     }
+  //   }
+  //   (function draw(){
+  //     let newStars=[]
+  //     ctx.clearRect(0,0,bounds.width*dpi,bounds.height*dpi);
+  //     setFillStyle('#FFEDDB',ctx);
+  //     forEach(stars, function(star){
+  //       star.s+=star.speed*(star.growing?1:-1);
+  //       if(star.s>1) star.growing=false
+  //       if(star.s<0){
+  //         return;
+  //       }else{
+  //         newStars.push(star)
+  //       }
+  //       drawStar(
+  //         star.x*dpi,
+  //         star.y*dpi,
+  //         1,
+  //         smooth(star.s)*star.maxSize*dpi,
+  //         ctx
+  //       )
+  //     })
+  //     newStars.push(createStar());
+  //     stars=newStars
+  //     ctx.globalAlpha=1;
+  //     if(!stopAnim)
+  //       raf(draw);
+  //   })()
+  //   return {
+  //     stop:function(){
+  //       stopAnim=true;
+  //     }
+  //   }
+  // }
 
   (function() {
     let animStars=stars()
