@@ -68,12 +68,12 @@
     let ctx=getContext(canvas)
     let bounds=getBounds(canvas)
     sizeToBounds(bounds,dpi,canvas)
-    function drawStar(x,y,size,scale,ctx){
+    function drawStar(x,y,size,ctx){
       ctx.save();
-      ctx.translate(x,y);
-      ctx.scale(scale,scale);
-      ctx.rotate(Math.PI/4);
-      ctx.fillRect(-size/2,-size/2,size,size);
+      ctx.beginPath();
+      ctx.arc(x,y,size,0,size * Math.PI,false);
+      setFillStyle('#FFEDDB',ctx);
+      ctx.fill()
       ctx.restore();
     }
     let stars = []
@@ -88,8 +88,6 @@
     }
     (function draw(){
       ctx.clearRect(0,0,bounds.width*dpi,bounds.height*dpi);
-      setFillStyle('#FFEDDB',ctx);
-
       //pushes stars into array
       for(let i =0; i<800; i++){
         stars.push(createStar())
@@ -98,7 +96,6 @@
         drawStar(
           star.x*dpi,
           star.y*dpi,
-          1,
           star.maxSize,
           ctx
         )
