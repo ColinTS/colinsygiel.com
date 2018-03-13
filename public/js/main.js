@@ -77,6 +77,7 @@
       ctx.restore();
     }
     let stars = []
+    //function to create stars
     function createStar(){
       return {
         x: random(bounds.width),
@@ -88,12 +89,19 @@
     (function draw(){
       ctx.clearRect(0,0,bounds.width*dpi,bounds.height*dpi);
       setFillStyle('#FFEDDB',ctx);
-      //Creates stars
+
+      //pushes stars into array
       for(let i =0; i<800; i++){
         stars.push(createStar())
       }
       forEach(stars, function(star){
-
+        drawStar(
+          star.x*dpi,
+          star.y*dpi,
+          1,
+          star.maxSize,
+          ctx
+        )
       })
       console.log(stars)
     })()
