@@ -68,10 +68,11 @@
     let ctx=getContext(canvas)
     let bounds=getBounds(canvas)
     sizeToBounds(bounds,dpi,canvas)
-    function drawStar(x,y,size,scale,ctx){
+    function drawStar(x,y,size,scale,opacity,ctx){
       ctx.save();
       ctx.beginPath();
       ctx.arc(x,y,size+scale,0,size+scale * Math.PI,false);
+      ctx.globalAlpha = opacity
       ctx.closePath();
       setFillStyle('rgb(255,237,219)',ctx);
       ctx.fill()
@@ -84,9 +85,10 @@
         x: random(bounds.width),
         y: random(bounds.height),
         s: 0,
-        speed: 0.01+random(0.035),
+        speed: 0.009+random(0.005),
         growing: true,
         size: 1+(Math.pow(random(1),4)*2),
+        opacity: 0
       }
     }
     (function draw(){
@@ -94,6 +96,7 @@
       ctx.clearRect(0,0,bounds.width*dpi,bounds.height*dpi);
       forEach(stars, function(star){
         star.s+=star.speed*(star.growing?1:-1)
+        star.growing?star.opacity+=0.015:star.opacity+=-0.015
         if(star.s>1) star.growing=false
         if(star.s<0){
           return;
@@ -105,11 +108,12 @@
           star.y*dpi,
           star.size,
           smooth(star.s)*star.size*dpi,
+          star.opacity,
           ctx
         )
         console.log(star)
       })
-      newStars.push(createStar());
+      if(random(1)<0.0000005*(win.innerWidth*win.innerHeight)) newStars.push(createStar());
       stars=newStars
       if(!stopAnim)
         raf(draw);
