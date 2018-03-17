@@ -68,11 +68,12 @@
     let ctx=getContext(canvas)
     let bounds=getBounds(canvas)
     sizeToBounds(bounds,dpi,canvas)
-    function drawStar(x,y,size,ctx){
+    function drawStar(x,y,size,scale,ctx){
       ctx.save();
       ctx.beginPath();
-      ctx.arc(x,y,size,0,size * Math.PI,false);
-      setFillStyle('#FFEDDB',ctx);
+      ctx.arc(x,y,size+scale,0,size+scale * Math.PI,false);
+      ctx.closePath();
+      setFillStyle('rgb(255,237,219)',ctx);
       ctx.fill()
       ctx.restore();
     }
@@ -82,25 +83,36 @@
       return {
         x: random(bounds.width),
         y: random(bounds.height),
-        maxSize: 1+(Math.pow(random(1),4)*10),
-        opacity: random(1)
+        s: 0,
+        speed: 0.01+random(0.035),
+        growing: true,
+        size: 1+(Math.pow(random(1),4)*2),
       }
     }
     (function draw(){
+      let newStars = []
       ctx.clearRect(0,0,bounds.width*dpi,bounds.height*dpi);
-      //pushes stars into array
-      for(let i =0; i<800; i++){
-        stars.push(createStar())
-      }
       forEach(stars, function(star){
+        star.s+=star.speed*(star.growing?1:-1)
+        if(star.s>1) star.growing=false
+        if(star.s<0){
+          return;
+        } else {
+          newStars.push(star)
+        }
         drawStar(
           star.x*dpi,
           star.y*dpi,
-          star.maxSize,
+          star.size,
+          smooth(star.s)*star.size*dpi,
           ctx
         )
+        console.log(star)
       })
-      console.log(stars)
+      newStars.push(createStar());
+      stars=newStars
+      if(!stopAnim)
+        raf(draw);
     })()
     
   }
