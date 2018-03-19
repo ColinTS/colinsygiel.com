@@ -8,6 +8,7 @@
   let body=doc.body;
   let html=doc.documentElement;
   let raf=requestAnimationFrame
+  let starsArray = []
   function getScroll(){
     return win.pageYOffset || html.scrollTop;
   }
@@ -61,7 +62,16 @@
   function smooth(x){
     return x*x*(3 - 2*x);
   }
+  function stopAnimation(){
+    stopAnim = true
+    console.log(stopAnim)
+  }
+  function getStarsArray(){
+    console.log(starsArray)
+    return starsArray
+  }
 
+  //Initialize star animations
   function stars(){
     let canvas=querySelector('.Scene-stars')
     let stopAnim=false
@@ -78,7 +88,6 @@
       ctx.fill()
       ctx.restore();
     }
-    let stars = []
     //function to create stars
     function createStar(){
       return {
@@ -94,7 +103,7 @@
     (function draw(){
       let newStars = []
       ctx.clearRect(0,0,bounds.width*dpi,bounds.height*dpi);
-      forEach(stars, function(star){
+      forEach(starsArray, function(star){
         star.s+=star.speed*(star.growing?1:-1)
         star.growing?star.opacity+=0.015:star.opacity+=-0.015
         if(star.s>1) star.growing=false
@@ -111,14 +120,17 @@
           star.opacity,
           ctx
         )
-        console.log(star)
       })
       if(random(1)<0.0000005*(win.innerWidth*win.innerHeight)) newStars.push(createStar());
-      stars=newStars
+      starsArray=newStars
       if(!stopAnim)
         raf(draw);
     })()
-    
+    return {
+      stop:function(){
+        stopAnim=true;
+      }
+    }  
   }
 
   // ------ OLD --------
@@ -168,6 +180,12 @@
 
   (function() {
     let animStars=stars()
+
+    //Stops stars animation, in preparation for commencement of hyperdrive!
+    setTimeout(animStars.stop, 4000)
+    setTimeout(getStarsArray, 4000)
+
+    //On resize, restart animation
     let lastResizeW=win.innerWidth;
     let lastResizeH=win.innerHeight;
     let resizeTimer=null;
