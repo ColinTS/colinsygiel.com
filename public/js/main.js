@@ -81,11 +81,16 @@
     function drawStar(x,y,size,scale,opacity,ctx){
       ctx.save();
       ctx.beginPath();
-      ctx.arc(x,y,size+scale,0,size+scale * Math.PI,false);
+      // ctx.arc(x,y,size+scale,0,size+scale * Math.PI,false);
+      ctx.lineWidth = size+scale*3;
+      ctx.lineCap = "round";
+      ctx.lineTo(x,y);  
+      ctx.strokeStyle='rgb(255,237,219)'
+      ctx.stroke();
       ctx.globalAlpha = opacity
       ctx.closePath();
-      setFillStyle('rgb(255,237,219)',ctx);
-      ctx.fill()
+      // setFillStyle('rgb(255,237,219)',ctx);
+      // ctx.fill()
       ctx.restore();
     }
     //function to create stars
@@ -182,8 +187,8 @@
     let animStars=stars()
 
     //Stops stars animation, in preparation for commencement of hyperdrive!
-    setTimeout(animStars.stop, 4000)
-    setTimeout(getStarsArray, 4000)
+    setTimeout(animStars.stop, 5000)
+    setTimeout(getStarsArray, 5000)
 
     //On resize, restart animation
     let lastResizeW=win.innerWidth;
