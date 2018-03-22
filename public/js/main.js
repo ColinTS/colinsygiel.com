@@ -9,6 +9,10 @@
   let html=doc.documentElement;
   let raf=requestAnimationFrame
   let starsArray = []
+
+  let centerQuery = querySelector('.Center')
+  let center = centerQuery.getBoundingClientRect()
+
   function getScroll(){
     return win.pageYOffset || html.scrollTop;
   }
@@ -73,6 +77,7 @@
 
   //Initialize star animations
   function stars(){
+    console.log('center', center)
     let canvas=querySelector('.Scene-stars')
     let stopAnim=false
     let ctx=getContext(canvas)
@@ -102,7 +107,7 @@
         speed: 0.009+random(0.005),
         growing: true,
         size: 1+(Math.pow(random(1),4)*2),
-        opacity: 0
+        opacity: 0,
       }
     }
     (function draw(){
