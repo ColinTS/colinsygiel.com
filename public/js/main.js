@@ -10,8 +10,9 @@
   let raf=requestAnimationFrame
   let starsArray = []
 
+  //center reference
   let centerQuery = querySelector('.Center')
-  let center = centerQuery.getBoundingClientRect()
+  let center = getBounds(centerQuery)
 
   function getScroll(){
     return win.pageYOffset || html.scrollTop;
@@ -69,10 +70,6 @@
   function stopAnimation(){
     stopAnim = true
     console.log(stopAnim)
-  }
-  function getStarsArray(){
-    console.log(starsArray)
-    return starsArray
   }
 
   //Initialize star animations
@@ -143,66 +140,29 @@
     }  
   }
 
-  // ------ OLD --------
-  //   let stars=[]
-  //   function createStar(){
-  //     return {
-  //       x:random(bounds.width),
-  //       y:random(bounds.height),
-  //       s:0,
-  //       speed:0.01+random(0.035),
-  //       growing:true,
-  //       maxSize:1+(Math.pow(random(1),4)*10),
-  //     }
-  //   }
-  //   (function draw(){
-  //     let newStars=[]
-  //     ctx.clearRect(0,0,bounds.width*dpi,bounds.height*dpi);
-  //     setFillStyle('#FFEDDB',ctx);
-  //     forEach(stars, function(star){
-  //       star.s+=star.speed*(star.growing?1:-1);
-  //       if(star.s>1) star.growing=false
-  //       if(star.s<0){
-  //         return;
-  //       }else{
-  //         newStars.push(star)
-  //       }
-  //       drawStar(
-  //         star.x*dpi,
-  //         star.y*dpi,
-  //         1,
-  //         smooth(star.s)*star.maxSize*dpi,
-  //         ctx
-  //       )
-  //     })
-  //     newStars.push(createStar());
-  //     stars=newStars
-  //     ctx.globalAlpha=1;
-  //     if(!stopAnim)
-  //       raf(draw);
-  //   })()
-  //   return {
-  //     stop:function(){
-  //       stopAnim=true;
-  //     }
-  //   }
-  // }
+  //Expand stars
+  let animStars=stars()
+  //Stops stars animation, in preparation for commencement of hyperdrive!
+  setTimeout(animStars.stop, 5000)
+  setTimeout(expandStars, 5000)
+  function expandStars(){
+    let newStarsArray = starsArray
+    newStarsArray.forEach(function(star){
+      star.yDelta = center.y - star.y
+      star.xDelta = center.x - star.x
+      console.log(star)
+    })
+  }
 
+  //On resize, restart animation
   (function() {
-    let animStars=stars()
-
-    //Stops stars animation, in preparation for commencement of hyperdrive!
-    setTimeout(animStars.stop, 5000)
-    setTimeout(getStarsArray, 5000)
-
-    //On resize, restart animation
     let lastResizeW=win.innerWidth;
     let lastResizeH=win.innerHeight;
     let resizeTimer=null;
     win.addEventListener('resize',function(){
       function resize(){
-        var ww=win.innerWidth;
-        var wh=win.innerHeight;
+        let ww=win.innerWidth;
+        let wh=win.innerHeight;
         if(ww!=lastResizeW){
           lastResizeW=ww;
           animStars.stop();
