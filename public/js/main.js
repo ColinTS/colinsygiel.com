@@ -150,6 +150,7 @@
     newStarsArray.forEach(function(star){
       star.yDelta = center.y - star.y
       star.xDelta = center.x - star.x
+      star.angle = Math.atan(star.yDelta/star.xDelta)
       console.log(star)
     })
   }
