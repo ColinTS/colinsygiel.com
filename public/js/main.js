@@ -83,7 +83,6 @@
     function drawStar(x,y,size,scale,opacity,ctx){
       ctx.save();
       ctx.beginPath();
-      // ctx.arc(x,y,size+scale,0,size+scale * Math.PI,false);
       ctx.lineWidth = size+scale*3;
       ctx.lineCap = "round";
       ctx.lineTo(x,y);  
@@ -91,10 +90,49 @@
       ctx.stroke();
       ctx.globalAlpha = opacity
       ctx.closePath();
-      // setFillStyle('rgb(255,237,219)',ctx);
-      // ctx.fill()
       ctx.restore();
     }
+
+    setTimeout(expandStars, 3000)
+    function expandStars(){
+      stopAnim=true
+      let newStarsArray = starsArray
+      let distance = 1
+      console.log('new',newStarsArray)
+      function drawExpandStar(x,y,size,opacity,ctx){
+        ctx.save();
+        ctx.beginPath();
+        ctx.lineWidth = size;
+        ctx.lineCap = "round";
+        ctx.lineTo(x,y);  
+        ctx.strokeStyle='rgb(255,237,219)'
+        ctx.stroke();
+        ctx.globalAlpha = opacity
+        ctx.closePath();
+        ctx.restore();
+      }
+      (function draw(){
+        ctx.clearRect(0,0,bounds.width*dpi,bounds.height*dpi);
+        newStarsArray.forEach(function(star){
+          distance+=0.1
+          star.size+=0.01
+          star.opacity+=0.001
+          star.yDelta = center.y - star.y
+          star.xDelta = center.x - star.x
+          star.angle = Math.atan(star.yDelta/star.xDelta)
+          drawExpandStar(
+            star.x + (Math.cos(star.angle)*distance),
+            star.y + (Math.sin(star.angle)*distance),
+            star.size,
+            star.opacity,
+            ctx
+          )
+        })
+        if(distance<10)
+          raf(draw);
+      })()
+    }
+    
     //function to create stars
     function createStar(){
       return {
@@ -137,23 +175,16 @@
       stop:function(){
         stopAnim=true;
       }
-    }  
+    }
+    
+    
   }
 
-  //Expand stars
-  let animStars=stars()
+
   //Stops stars animation, in preparation for commencement of hyperdrive!
-  setTimeout(animStars.stop, 5000)
-  setTimeout(expandStars, 5000)
-  function expandStars(){
-    let newStarsArray = starsArray
-    newStarsArray.forEach(function(star){
-      star.yDelta = center.y - star.y
-      star.xDelta = center.x - star.x
-      star.angle = Math.atan(star.yDelta/star.xDelta)
-      console.log(star)
-    })
-  }
+  let animStars=stars()
+  // setTimeout(animStars.stop, 5000)
+
 
   //On resize, restart animation
   (function() {
