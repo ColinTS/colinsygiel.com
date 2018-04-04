@@ -96,6 +96,10 @@
     setTimeout(expandStars, 3000)
     function expandStars(){
       stopAnim=true
+      let canvas=querySelector('.Scene-stars')
+      let ctx=getContext(canvas)
+      let bounds=getBounds(canvas)
+      sizeToBounds(bounds,dpi,canvas)
       let newStarsArray = starsArray
       let distance = 1
       console.log('new',newStarsArray)
@@ -114,21 +118,24 @@
       (function draw(){
         ctx.clearRect(0,0,bounds.width*dpi,bounds.height*dpi);
         newStarsArray.forEach(function(star){
-          distance+=0.1
-          star.size+=0.01
-          star.opacity+=0.001
-          star.yDelta = center.y - star.y
-          star.xDelta = center.x - star.x
-          star.angle = Math.atan(star.yDelta/star.xDelta)
+          distance+=0.01
+          star.size
+          star.opacity+=0.01
+          let yDelta = center.y - star.y
+          let xDelta = center.x - star.x
+          star.angle = Math.atan(yDelta/xDelta)
+          if (xDelta > 0){
+            star.angle -= Math.PI
+          }
           drawExpandStar(
-            star.x + (Math.cos(star.angle)*distance),
-            star.y + (Math.sin(star.angle)*distance),
+            star.x*dpi + (Math.cos(star.angle)*distance),
+            star.y*dpi + (Math.sin(star.angle)*distance),
             star.size,
             star.opacity,
             ctx
           )
         })
-        if(distance<10)
+        if(distance<5)
           raf(draw);
       })()
     }
@@ -182,12 +189,13 @@
 
 
   //Stops stars animation, in preparation for commencement of hyperdrive!
-  let animStars=stars()
+ 
   // setTimeout(animStars.stop, 5000)
 
 
   //On resize, restart animation
   (function() {
+    let animStars=stars()
     let lastResizeW=win.innerWidth;
     let lastResizeH=win.innerHeight;
     let resizeTimer=null;
