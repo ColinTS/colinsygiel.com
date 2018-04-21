@@ -8,7 +8,6 @@
   let body=doc.body;
   let html=doc.documentElement;
   let raf=requestAnimationFrame
-  let starsArray = []
 
   //center reference
   let centerQuery = querySelector('.Center')
@@ -75,6 +74,7 @@
   //Initialize star animations
   function stars(){
     console.log('center', center)
+    let starsArray = []
     let canvas=querySelector('.Scene-stars')
     let stopAnim=false
     let ctx=getContext(canvas)
@@ -88,56 +88,9 @@
       ctx.lineTo(x,y);  
       ctx.strokeStyle='rgb(255,237,219)'
       ctx.stroke();
-      ctx.globalAlpha = opacity
+      ctx.globalAlpha= opacity
       ctx.closePath();
       ctx.restore();
-    }
-
-    setTimeout(expandStars, 3000)
-    function expandStars(){
-      stopAnim=true
-      let canvas=querySelector('.Scene-stars')
-      let ctx=getContext(canvas)
-      let bounds=getBounds(canvas)
-      sizeToBounds(bounds,dpi,canvas)
-      let newStarsArray = starsArray
-      let distance = 1
-      console.log('new',newStarsArray)
-      function drawExpandStar(x,y,size,opacity,ctx){
-        ctx.save();
-        ctx.beginPath();
-        ctx.lineWidth = size;
-        ctx.lineCap = "round";
-        ctx.lineTo(x,y);  
-        ctx.strokeStyle='rgb(255,237,219)'
-        ctx.stroke();
-        ctx.globalAlpha = opacity
-        ctx.closePath();
-        ctx.restore();
-      }
-      (function draw(){
-        ctx.clearRect(0,0,bounds.width*dpi,bounds.height*dpi);
-        newStarsArray.forEach(function(star){
-          distance+=0.01
-          star.size
-          star.opacity+=0.01
-          let yDelta = center.y - star.y
-          let xDelta = center.x - star.x
-          star.angle = Math.atan(yDelta/xDelta)
-          if (xDelta > 0){
-            star.angle -= Math.PI
-          }
-          drawExpandStar(
-            star.x*dpi + (Math.cos(star.angle)*distance),
-            star.y*dpi + (Math.sin(star.angle)*distance),
-            star.size,
-            star.opacity,
-            ctx
-          )
-        })
-        if(distance<5)
-          raf(draw);
-      })()
     }
     
     //function to create stars
@@ -149,7 +102,7 @@
         speed: 0.009+random(0.005),
         growing: true,
         size: 1+(Math.pow(random(1),4)*2),
-        opacity: 0,
+        opacity: 0.1,
       }
     }
     (function draw(){
@@ -157,7 +110,7 @@
       ctx.clearRect(0,0,bounds.width*dpi,bounds.height*dpi);
       forEach(starsArray, function(star){
         star.s+=star.speed*(star.growing?1:-1)
-        star.growing?star.opacity+=0.015:star.opacity+=-0.015
+        star.growing?star.opacity+=0.15:star.opacity+=-0.15
         if(star.s>1) star.growing=false
         if(star.s<0){
           return;
@@ -178,19 +131,62 @@
       if(!stopAnim)
         raf(draw);
     })()
+
+    //Star expansion
+    setTimeout(expandStars, 3500)
+    function expandStars(){
+      stopAnim=true
+      let canvas=querySelector('.Scene-stars')
+      let ctx=getContext(canvas)
+      let bounds=getBounds(canvas)
+      sizeToBounds(bounds,dpi,canvas)
+      let newStarsArray = starsArray
+      let distance = 1
+      console.log('new',newStarsArray)
+      function drawExpandStar(x,y,size,scale,opacity,ctx){
+        ctx.save();
+        ctx.beginPath();
+        ctx.lineWidth = size+scale*3
+        ctx.lineCap = "round";
+        ctx.lineTo(x,y);  
+        ctx.strokeStyle='rgb(255,237,219)'
+        ctx.stroke();
+        ctx.globalAlpha = opacity
+        ctx.closePath();
+        ctx.restore();
+      }
+      (function draw(){
+        ctx.clearRect(0,0,bounds.width*dpi,bounds.height*dpi);
+        newStarsArray.forEach(function(star){
+          distance+=0.003
+          star.size+=0.017
+          star.opacity+=0.0001
+          let yDelta = center.y - star.y
+          let xDelta = center.x - star.x
+          star.angle = Math.atan(yDelta/xDelta)
+          if (xDelta > 0){
+            star.angle -= Math.PI
+          }
+          drawExpandStar(
+            star.x*dpi + (Math.cos(star.angle)*distance),
+            star.y*dpi + (Math.sin(star.angle)*distance),
+            star.size,
+            smooth(star.s)*star.size*dpi,
+            star.opacity,
+            ctx
+          )
+        })
+        if(distance<70)
+          raf(draw);
+      })()
+    }
+
     return {
       stop:function(){
         stopAnim=true;
       }
-    }
-    
-    
+    }    
   }
-
-
-  //Stops stars animation, in preparation for commencement of hyperdrive!
- 
-  // setTimeout(animStars.stop, 5000)
 
 
   //On resize, restart animation
