@@ -71,10 +71,10 @@
     console.log(stopAnim)
   }
 
-  //Initialize star animations
   function stars(){
     console.log('center', center)
     let starsArray = []
+    let distance = 1
     let canvas=querySelector('.Scene-stars')
     let stopAnim=false
     let ctx=getContext(canvas)
@@ -93,7 +93,7 @@
       ctx.restore();
     }
     
-    //function to create stars
+    //Creates stars objects
     function createStar(){
       return {
         x: random(bounds.width),
@@ -102,7 +102,7 @@
         speed: 0.009+random(0.005),
         growing: true,
         size: 1+(Math.pow(random(1),4)*2),
-        opacity: 0.1,
+        opacity: 0.01,
       }
     }
     (function draw(){
@@ -132,17 +132,14 @@
         raf(draw);
     })()
 
-    //Star expansion
-    setTimeout(expandStars, 3500)
+    //COMMENCE LIGHT SPEED - Stars slowly begin to expand
+    // setTimeout(expandStars, 3500)
     function expandStars(){
       stopAnim=true
       let canvas=querySelector('.Scene-stars')
       let ctx=getContext(canvas)
       let bounds=getBounds(canvas)
       sizeToBounds(bounds,dpi,canvas)
-      let newStarsArray = starsArray
-      let distance = 1
-      console.log('new',newStarsArray)
       function drawExpandStar(x,y,size,scale,opacity,ctx){
         ctx.save();
         ctx.beginPath();
@@ -156,8 +153,9 @@
         ctx.restore();
       }
       (function draw(){
+        console.log('stars1', starsArray)
         ctx.clearRect(0,0,bounds.width*dpi,bounds.height*dpi);
-        newStarsArray.forEach(function(star){
+        starsArray.forEach(function(star){
           distance+=0.003
           star.size+=0.017
           star.opacity+=0.0001
@@ -178,16 +176,43 @@
         })
         if(distance<70)
           raf(draw);
+        if(!distance<70)
+          console.log('STARS', starsArray)
       })()
     }
 
+    //LIGHT SPEED! - Stars begin to grow and distort
+    function distortStars(){
+      let canvas=querySelector('.Scene-stars')
+      let ctx=getContext(canvas)
+      let bounds=getBounds(canvas)
+      sizeToBounds(bounds,dpi,canvas)
+      function drawDistortStar(x,y,moveX,moveY,size,scale,opacity,ctx){
+        ctx.save();
+        ctx.beginPath();
+        ctx.lineWidth = size+scale*3
+        ctx.lineCap = "round";
+        ctx.moveTo(moveX, moveY)
+        ctx.lineTo(x,y);
+        ctx.strokeStyle='rgb(255,237,219)'
+        ctx.stroke();
+        ctx.globalAlpha = opacity
+        ctx.closePath();
+        ctx.restore();
+      }
+      (function draw(){
+        ctx.clearRect(0,0,bounds.width*dpi,bounds.height*dpi);
+        starsArray.forEach(function(star){
+          
+        })
+      })()
+    }
     return {
       stop:function(){
         stopAnim=true;
       }
     }    
   }
-
 
   //On resize, restart animation
   (function() {
