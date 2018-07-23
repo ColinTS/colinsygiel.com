@@ -1,5 +1,6 @@
-var express = require('express');
-var app = express();
+let express = require('express');
+let reload = require('reload')
+let app = express();
 
 app.use(express.static(__dirname + '/public'));
  
@@ -10,8 +11,14 @@ app.set('view engine', 'pug');
 // GET response for '/'
 app.get('/', function (req, res) {
     // render the 'index' template, and pass in a few variables
-    res.render('index');
+    res.render('index', {
+        randomNumber: () => {
+            return Math.random() * 10
+        }
+    });
 });
+
+reload(app);
  
 // start up the server
 app.listen(3000, function () {

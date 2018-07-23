@@ -72,7 +72,6 @@
   }
 
   function stars(){
-    console.log('center', center)
     let starsArray = []
     let distance = 1
     let canvas=querySelector('.Scene-stars')
@@ -131,82 +130,6 @@
       if(!stopAnim)
         raf(draw);
     })()
-
-    //COMMENCE LIGHT SPEED - Stars slowly begin to expand
-    // setTimeout(expandStars, 3500)
-    function expandStars(){
-      stopAnim=true
-      let canvas=querySelector('.Scene-stars')
-      let ctx=getContext(canvas)
-      let bounds=getBounds(canvas)
-      sizeToBounds(bounds,dpi,canvas)
-      function drawExpandStar(x,y,size,scale,opacity,ctx){
-        ctx.save();
-        ctx.beginPath();
-        ctx.lineWidth = size+scale*3
-        ctx.lineCap = "round";
-        ctx.lineTo(x,y);  
-        ctx.strokeStyle='rgb(255,237,219)'
-        ctx.stroke();
-        ctx.globalAlpha = opacity
-        ctx.closePath();
-        ctx.restore();
-      }
-      (function draw(){
-        console.log('stars1', starsArray)
-        ctx.clearRect(0,0,bounds.width*dpi,bounds.height*dpi);
-        starsArray.forEach(function(star){
-          distance+=0.003
-          star.size+=0.017
-          star.opacity+=0.0001
-          let yDelta = center.y - star.y
-          let xDelta = center.x - star.x
-          star.angle = Math.atan(yDelta/xDelta)
-          if (xDelta > 0){
-            star.angle -= Math.PI
-          }
-          drawExpandStar(
-            star.x*dpi + (Math.cos(star.angle)*distance),
-            star.y*dpi + (Math.sin(star.angle)*distance),
-            star.size,
-            smooth(star.s)*star.size*dpi,
-            star.opacity,
-            ctx
-          )
-        })
-        if(distance<70)
-          raf(draw);
-        if(!distance<70)
-          console.log('STARS', starsArray)
-      })()
-    }
-
-    //LIGHT SPEED! - Stars begin to grow and distort
-    function distortStars(){
-      let canvas=querySelector('.Scene-stars')
-      let ctx=getContext(canvas)
-      let bounds=getBounds(canvas)
-      sizeToBounds(bounds,dpi,canvas)
-      function drawDistortStar(x,y,moveX,moveY,size,scale,opacity,ctx){
-        ctx.save();
-        ctx.beginPath();
-        ctx.lineWidth = size+scale*3
-        ctx.lineCap = "round";
-        ctx.moveTo(moveX, moveY)
-        ctx.lineTo(x,y);
-        ctx.strokeStyle='rgb(255,237,219)'
-        ctx.stroke();
-        ctx.globalAlpha = opacity
-        ctx.closePath();
-        ctx.restore();
-      }
-      (function draw(){
-        ctx.clearRect(0,0,bounds.width*dpi,bounds.height*dpi);
-        starsArray.forEach(function(star){
-          
-        })
-      })()
-    }
     return {
       stop:function(){
         stopAnim=true;
