@@ -2,7 +2,7 @@ let express = require("express");
 let app = express();
 var path = require("path");
 
-app.use(express.static(__dirname + "/public"));
+app.use(express.static(__dirname));
 
 // set up the template engine
 app.set("views", "./views");
